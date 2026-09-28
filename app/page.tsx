@@ -181,8 +181,8 @@ export default function Home() {
         <section id="about" className="group relative isolate mx-auto text-center text-slate-950">
           <div className="relative mx-auto flex max-w-3xl flex-col items-center">
             <h1 className="mt-6 max-w-3xl text-4xl font-medium leading-tight tracking-tight transition-transform duration-500 ease-out group-hover:-translate-y-1 sm:text-5xl sm:leading-[1.2] md:text-6xl">
-              <TextAnimate animation="blurInUp" by="character" once className="inline-block">สวัสดีครับ ผมชื่อ Chayanon</TextAnimate>
-              <span className="block text-slate-500"><TextAnimate animation="blurInUp" by="character" once className="inline-block">ผู้ออกแบบประสบการณ์ดิจิทัล</TextAnimate></span>
+              <TextAnimate animation="blurInUp" by="character" once>สวัสดีครับ ผมชื่อ Chayanon</TextAnimate>
+              <span className="block text-slate-500"><TextAnimate animation="blurInUp" by="character" once>ผู้ออกแบบประสบการณ์ดิจิทัล</TextAnimate></span>
             </h1>
             <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-600 transition-transform duration-500 ease-out group-hover:-translate-y-0.5 sm:text-base">
               ผมสร้างเว็บไซต์ที่สวย ใช้งานง่าย และใส่ใจในทุกรายละเอียด ด้วย React และ TypeScript

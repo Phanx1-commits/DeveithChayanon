@@ -17,9 +17,9 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { min-width: 320px; margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font-sans); }
+body { min-width: 320px; margin: 0; overflow-x: hidden; background: var(--background); color: var(--foreground); font-family: var(--font-sans); }
 .font-poppins { font-family: "Poppins", var(--font-sans); }
-.text-animate-item { display: inline-block; opacity: 0; }
+.text-animate-item { display: inline-block; opacity: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
 .text-animate-blur-in-up { animation: text-animate-blur-in-up .65s cubic-bezier(.22, 1, .36, 1) both; }
 button, a { -webkit-tap-highlight-color: transparent; }
 ::selection { background: #f06445; color: #1b1719; }
@@ -40,6 +40,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   padding: 1.5rem;
   background: rgba(255, 255, 255, .94);
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   transition: opacity .5s cubic-bezier(.22, 1, .36, 1), visibility .5s;
 }
 .site-loader-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -190,6 +191,25 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @keyframes text-animate-blur-in-up {
   from { opacity: 0; filter: blur(8px); transform: translateY(16px); }
   to { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+
+@supports (-webkit-touch-callout: none) {
+  .text-animate-blur-in-up {
+    animation-name: text-animate-ios-in-up;
+    filter: none;
+    -webkit-filter: none;
+  }
+
+  .site-loader {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: #fff;
+  }
+}
+
+@keyframes text-animate-ios-in-up {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @keyframes bento-float {
