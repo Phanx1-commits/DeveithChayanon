@@ -41,7 +41,7 @@ const creations = [
   },
 ];
 
-const engeniusLogo = "https://app-onlearn.engeniusapp.com/images/engenius/logo-full.png";
+const engeniusLogo = "/projects/engenius-group-cropped.jpg";
 
 function BrandMark() {
   return (
@@ -56,11 +56,19 @@ function BrandMark() {
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuMounted, setIsMenuMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoaderLeaving, setIsLoaderLeaving] = useState(false);
   const [cookieConsent, setCookieConsent] = useState<"accepted" | "declined" | null>(null);
   const [isCookieClosing, setIsCookieClosing] = useState(false);
+
+  useEffect(() => {
+    if (isMenuOpen || !isMenuMounted) return;
+
+    const timeout = window.setTimeout(() => setIsMenuMounted(false), 700);
+    return () => window.clearTimeout(timeout);
+  }, [isMenuOpen, isMenuMounted]);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 12);
@@ -83,6 +91,16 @@ export default function Home() {
     setIsLoaderLeaving(true);
     window.setTimeout(() => setIsLoading(false), 650);
   }, []);
+
+  const handleMenuToggle = () => {
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+      return;
+    }
+
+    setIsMenuMounted(true);
+    window.requestAnimationFrame(() => setIsMenuOpen(true));
+  };
 
   return (
     <>
@@ -110,20 +128,53 @@ export default function Home() {
             <a href="mailto:hello@example.com" className="rounded-full bg-slate-950 px-8 py-2.5 text-sm font-medium text-white shadow-[0_5px_14px_rgba(15,23,42,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-[0_8px_20px_rgba(15,23,42,0.22)]">ติดต่อผม</a>
           </div>
 
-          <button type="button" className="relative z-50 text-slate-800 md:hidden" aria-expanded={isMenuOpen} aria-controls="mobileMenu" aria-label={isMenuOpen ? "ปิดเมนู" : "เปิดเมนู"} onClick={() => setIsMenuOpen((open) => !open)}>
+          <button type="button" className={`relative z-50 rounded-xl p-2 outline-none transition duration-300 active:scale-95 md:hidden ${isMenuOpen ? "bg-white text-slate-950 shadow-[0_6px_16px_rgba(15,23,42,0.12)] hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-slate-300" : "text-slate-800 hover:bg-slate-100 hover:text-slate-950 focus-visible:ring-2 focus-visible:ring-slate-300"}`} aria-expanded={isMenuOpen} aria-controls="mobileMenu" aria-label={isMenuOpen ? "ปิดเมนู" : "เปิดเมนู"} onClick={handleMenuToggle}>
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
-        <div id="mobileMenu" className={`fixed inset-0 z-40 flex flex-col bg-white px-8 pt-28 transition-all duration-500 md:hidden ${isMenuOpen ? "translate-x-0 opacity-100" : "pointer-events-none -translate-x-full opacity-0"}`}>
-          <div className="flex flex-col gap-6 text-2xl font-medium">
-            {navItems.map((item) => (
-              <a key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)}>{item.label}</a>
-            ))}
-            <a href="#experience" onClick={() => setIsMenuOpen(false)} className="w-fit rounded-full border border-slate-900 px-5 py-2 text-base">โปรเจกต์ของผม</a>
-            <a href="mailto:hello@example.com" onClick={() => setIsMenuOpen(false)} className="w-fit rounded-full bg-slate-950 px-7 py-3 text-base text-white">ติดต่อผม</a>
+        {isMenuMounted && <div id="mobileMenu" className={`absolute inset-x-0 top-0 z-40 h-[100dvh] w-screen overflow-y-auto overscroll-contain bg-slate-100 px-4 pb-4 pt-16 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] sm:px-6 md:hidden ${isMenuOpen ? "translate-x-0 opacity-100" : "pointer-events-none -translate-x-full opacity-0"}`}>
+          <div className={`mx-auto flex min-h-full max-w-sm flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.16)] transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-[transform,opacity] ${isMenuOpen ? "translate-y-0 scale-100 opacity-100" : "translate-y-6 scale-[.98] opacity-0"}`}>
+            <div className={`relative overflow-hidden bg-slate-950 px-5 pb-7 pt-5 text-white transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMenuOpen ? "translate-y-0 opacity-100 delay-75" : "-translate-y-3 opacity-0"}`}>
+              <div className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full border border-white/10 bg-white/[.04]" />
+              <div className="pointer-events-none absolute -bottom-24 left-24 h-40 w-40 rounded-full bg-slate-700/30 blur-3xl" />
+              <div className="relative flex items-center justify-between">
+                <a href="#top" onClick={() => setIsMenuOpen(false)} className="group flex items-center gap-3" aria-label="กลับไปด้านบน">
+                  <span className="grid h-9 w-9 place-items-center rounded-xl bg-white"><BrandMark /></span>
+                  <span className="text-lg font-semibold tracking-tight transition-colors group-hover:text-slate-300">Chayanon</span>
+                </a>
+                <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-slate-400">Menu / 01</span>
+              </div>
+              <div className="relative mt-9">
+                <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-slate-400">Chayanon Portfolio</p>
+                <h2 className="mt-3 text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">สร้างประสบการณ์<br /><span className="text-slate-400">ที่น่าจดจำ</span></h2>
+              </div>
+            </div>
+
+            <div className={`flex flex-1 flex-col px-5 pb-5 pt-6 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMenuOpen ? "translate-y-0 opacity-100 delay-150" : "translate-y-3 opacity-0"}`}>
+              <div className="flex flex-col">
+                <p className="mb-2 px-1 text-[10px] font-bold uppercase tracking-[0.24em] text-slate-400">สำรวจเว็บไซต์</p>
+                {navItems.map((item, index) => (
+                  <a key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)} style={{ transitionDelay: isMenuOpen ? `${230 + index * 55}ms` : "0ms" }} className={`group flex items-center justify-between border-b border-slate-200 py-4 text-xl font-medium text-slate-900 transition-[transform,opacity,color] duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] first:border-t hover:text-slate-500 active:text-slate-400 sm:text-2xl ${isMenuOpen ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
+                    <span className="flex items-center gap-4"><span className="font-mono text-[10px] font-normal tracking-widest text-slate-400">0{index + 1}</span>{item.label}</span>
+                    <span className="text-base text-slate-300 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-slate-950" aria-hidden="true">↗</span>
+                  </a>
+                ))}
+              </div>
+
+              <div className={`mt-auto pt-8 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMenuOpen ? "translate-y-0 opacity-100 delay-400" : "translate-y-4 opacity-0"}`}>
+                <div className="rounded-3xl bg-slate-950 p-5 text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)]">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="flex items-center gap-2 text-xs font-medium"><span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(52,211,153,0.12)]" />พร้อมคุยโปรเจกต์ใหม่</span>
+                    <span className="text-slate-400" aria-hidden="true">↗</span>
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-slate-300">เว็บไซต์ · UI/UX · Frontend</p>
+                </div>
+                <p className="mt-4 text-center text-[10px] font-medium tracking-[0.16em] text-slate-400">REACT · TYPESCRIPT · TAILWIND CSS</p>
+              </div>
+            </div>
           </div>
-        </div>
+        </div>}
       </nav>
 
       <div id="top" className="mx-auto max-w-6xl px-6 pb-10 pt-8 sm:px-10 sm:pt-10">
@@ -267,7 +318,7 @@ export default function Home() {
           <div className="mx-auto mt-10 flex h-auto w-full max-w-5xl flex-col gap-4 md:h-[400px] md:flex-row md:items-center md:gap-6">
             {creations.map((creation) => (
               <a key={creation.title} href={creation.url} target="_blank" rel="noreferrer" aria-label={`เปิดโปรเจกต์ ${creation.title}`} className="group relative block h-56 w-full overflow-hidden rounded-2xl bg-slate-950 transition-all duration-500 hover:shadow-xl hover:shadow-slate-300 md:h-[400px] md:w-56 md:flex-grow md:hover:w-full">
-                <img className={`h-full w-full object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0 ${creation.position}`} src={creation.image} alt={creation.title} />
+                <img className={`h-full w-full object-cover transition duration-700 lg:grayscale group-hover:scale-105 group-hover:grayscale-0 ${creation.position}`} src={creation.image} alt={creation.title} />
                 <div className="absolute inset-0 flex flex-col justify-end bg-black/0 p-6 text-white opacity-0 transition-all duration-300 group-hover:bg-black/55 group-hover:opacity-100 sm:p-10">
                   <h3 className="text-2xl font-medium">{creation.title}</h3>
                   <p className="mt-2 max-w-sm text-sm leading-6 text-white/85">{creation.description}</p>
@@ -280,11 +331,11 @@ export default function Home() {
         <section className="border-y border-slate-100 py-16" aria-labelledby="internship-title">
           <div className="mx-auto mb-9 max-w-2xl text-center">
             <div className="group flex items-center justify-center gap-3">
-              <img className="h-8 w-auto max-w-32 object-contain grayscale transition duration-500 group-hover:scale-105 group-hover:grayscale-0" src={engeniusLogo} alt="Engenius" draggable={false} />
+              <img className="h-8 w-32 rounded-md object-contain transition duration-500 lg:grayscale group-hover:scale-105 group-hover:grayscale-0" src={engeniusLogo} alt="Engenius Group" draggable={false} />
               <span className="h-5 w-px bg-slate-200" aria-hidden="true" />
               <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-slate-400">Internship</span>
             </div>
-            <h2 id="internship-title" className="mt-4 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">ประสบการณ์ฝึกงานที่ Engenius</h2>
+            <h2 id="internship-title" className="mt-4 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">ประสบการณ์ฝึกงานที่ Engenius Group</h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-slate-500">นักศึกษาฝึกงานที่มีส่วนร่วมในการออกแบบและพัฒนา 3 โปรเจกต์ ตั้งแต่แพลตฟอร์มหางาน ระบบ CRM ไปจนถึงแชทบอท LINE</p>
           </div>
 
@@ -293,10 +344,10 @@ export default function Home() {
               {creations.map((creation) => (
                 <a key={`internship-${creation.title}`} href={creation.url} target="_blank" rel="noreferrer" aria-label={`เปิดโปรเจกต์ ${creation.title}`} className="group block w-[280px] shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)] transition duration-500 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_16px_30px_rgba(15,23,42,0.12)] sm:w-[340px]">
                   <div className="relative h-32 overflow-hidden bg-slate-100">
-                    <img className={`h-full w-full object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0 ${creation.position}`} src={creation.image} alt="" />
+                    <img className={`h-full w-full object-cover transition duration-700 lg:grayscale group-hover:scale-105 group-hover:grayscale-0 ${creation.position}`} src={creation.image} alt="" />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 to-transparent" />
                     <div className="absolute bottom-3 left-4 flex items-center gap-2 rounded-full border border-white/40 bg-white/90 px-2.5 py-1 backdrop-blur-sm">
-                      <img className="h-4 w-auto max-w-16 object-contain grayscale transition duration-500 group-hover:grayscale-0" src={engeniusLogo} alt="Engenius" draggable={false} />
+                      <img className="h-4 w-16 rounded-sm object-contain transition duration-500 lg:grayscale group-hover:grayscale-0" src={engeniusLogo} alt="Engenius Group" draggable={false} />
                     </div>
                   </div>
                   <div className="p-5">
